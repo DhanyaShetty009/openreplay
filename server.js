@@ -14,8 +14,8 @@ const io = socketIO(server, {
 // Serve React static files in production
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-// Handle React routing - serve index.html for all non-API routes
-app.get("*", (req, res) => {
+// Handle React routing - serve index.html for all non-API routes (Express 5 syntax)
+app.get("/{*splat}", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
