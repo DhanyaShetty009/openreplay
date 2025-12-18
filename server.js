@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -8,6 +9,14 @@ const io = socketIO(server, {
   cors: {
     origin: "*",
   },
+});
+
+// Serve React static files in production
+app.use(express.static(path.join(__dirname, "client", "build")));
+
+// Handle React routing - serve index.html for all non-API routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
 io.on("connection", (socket) => {
@@ -40,7 +49,8 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 3000;
+// Use Render's PORT environment variable
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

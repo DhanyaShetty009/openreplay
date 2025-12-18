@@ -23,7 +23,13 @@ function App() {
     // Note: OpenReplay tracker is already started in index.js
     // Just use the tracker instance for event tracking here
 
-    socketRef.current = io("http://localhost:3000");
+    // In production, connect to same origin (Render URL)
+    // In development, connect to localhost:3000
+    const serverURL = process.env.NODE_ENV === "production" 
+      ? window.location.origin 
+      : "http://localhost:3000";
+    
+    socketRef.current = io(serverURL);
 
     socketRef.current.on("connect", () => {
       console.log("Connected to server!");
